@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#101311" />
+  <title>Draft Lab — Brawl Stars Ranked Companion</title>
+  <link rel="preconnect" href="https://api.brawlapi.com" />
+  <link rel="preconnect" href="https://cdn.brawlify.com" crossorigin />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Draft Lab home">
+      <span class="logo">D</span>
+      <span class="brand-name">DRAFT<span>LAB</span></span>
+    </a>
+    <div class="top-right">
+      <span class="live">
+        <i class="dot"></i>
+        <span id="dataStatus">Loading game data</span>
+      </span>
+      <span class="version">RANKED / S50</span>
+    </div>
+  </header>
+  <div class="hero">
+    <div>
+      <div class="eyebrow">Ranked companion · season 50</div>
+      <h1>Make the pick
+        <br>that wins the draft.</h1>
+        <p>Meta reads, map fit, matchups and team synergy in one place.</p>
+    </div>
+      <div class="hero-note">
+        <b>Draft smarter.</b>
+        Matchup grades below are class-level strategic guidance; map picks and ability tips are practical recommendations, not live in-game win-rate predictions.</div>
+      </div>
+  <nav class="nav" aria-label="Main navigation">
+    <button class="active" data-tab="meta">
+      <span class="num">01</span>
+      Meta
+    </button>
+    <button data-tab="maps">
+      <span class="num">02</span>
+      Map picks
+    </button>
+    <button data-tab="counters">
+      <span class="num">03</span>
+      Class counters
+    </button>
+    <button data-tab="synergy">
+      <span class="num">04</span>
+      Team synergy
+    </button>
+    <button data-tab="builds">
+      <span class="num">05</span>
+      Star Powers & Gadgets
+    </button>
+    <button data-tab="roster">
+      <span class="num">06</span>
+      All brawlers
+      <span id="navCount"></span>
+    </button>
+  </nav>
+  <main>
+    <section id="meta" class="section active">
+      <div class="section-head">
+        <div>
+          <h2>Ranked meta snapshot</h2>
+          <p>High-confidence picks from recent ranked battle data. Recheck after balance updates.</p>
+        </div>
+        <span class="pill lime">Updated Oct 23, 2026</span>
+      </div>
+      <div class="grid stats">
+        <div class="card stat">
+          <label>Current season</label>
+          <strong>S50</strong>
+          <span>Brawl Ball featured</span>
+        </div>
+        <div class="card stat">
+          <label>Live roster</label>
+          <strong id="statRoster">—</strong>
+          <span>Loaded from game data</span>
+        </div>
+        <div class="card stat">
+          <label>Top win rate</label>
+          <strong>56.2%</strong>
+          <span><i class="up">Amber</i> · Ranked sample</span>
+        </div>
+        <div class="card stat">
+          <label>Best blind pick</label>
+          <strong>Gus</strong>
+          <span>Support · broad map coverage</span>
+        </div>
+      </div>
+      <div class="card tier-board" id="tierBoard">
+      </div>
+      <div class="two-col"><div class="card pad">
+        <h3>What’s shaping the draft</h3>
+        <p class="sub">A quick read on the current sample</p>
+        <div class="insight"><span class="icon">↗</span>
+          <div><b>Flexible picks keep value across modes</b>
+            <p>Gus and Amber combine strong ranked results with broad map coverage, making them safer early picks.</p>
+          </div>
+        </div>
+        <div class="insight">
+          <span class="icon">⌖</span>
+          <div><b>Pressure the open lanes</b>
+            <p>Brock and Piper benefit when the map rewards long sight lines. Avoid forcing them into tight, wall-heavy lanes.</p>
+          </div>
+        </div>
+        <div class="insight">
+          <span class="icon">✳</span>
+          <div><b>Save a counter pick</b>
+            <p>Keep a control or burst option available when the opposing draft shows a committed tank or dive composition.</p>
+          </div>
+        </div>
+        <div class="source">Snapshot: BrawlMetrics Ranked tier list, Oct 23, 2026. Win rates and tiers reflect that third-party sample and may shift by rank, map and patch.</div>
+      </div>
+        <div class="card pad">
+          <h3>How to use Draft Lab</h3>
+          <p class="sub">Three checks before you lock in</p>
+          <div class="insight">
+            <span class="icon">1</span>
+            <div><b>Start with the map</b>
+              <p>Choose a pick that can use the cover, lanes and objective layout.</p>
+            </div>
+          </div>
+          <div class="insight">
+            <span class="icon">2</span>
+            <div><b>Cover the team’s gap</b>
+              <p>Balance range, frontline pressure, control and utility with your teammate’s pick.</p>
+            </div>
+          </div>
+          <div class="insight">
+            <span class="icon">3</span>
+            <div><b>Draft against their threat</b>
+              <p>Use the class matchup grid as a starting point, then check the actual brawler kit.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="maps" class="section">
+      <div class="section-head">
+        <div>
+          <h2>Best brawlers for the map</h2>
+          <p>Choose a map to get a short list based on its geometry and win condition.</p>
+        </div>
+      </div>
+      <div class="card pad">
+        <div class="controls">
+          <select class="select" id="mapSelect" aria-label="Choose map">
+            <option>Double Swoosh</option>
+            <option>Hard Rock Mine</option>
+            <option>Open Business</option>
+            <option>Flaring Phoenix</option>
+            <option>New Horizons</option>
+            <option>Out in the Open</option>
+            <option>Canal Grande</option>
+            <option>Field Goal</option>
+            <option>Safe Zone</option>
+            <option>Hot Potato</option>
+            <option>Parallel Plays</option>
+            <option>Ring of Fire</option>
+          </select>
+          <span id="mapMode" class="pill lime">Gem Grab</span>
+          <span id="mapTrait" class="pill">Bushes · split lanes</span>
+        </div>
+        <div id="mapPicks" class="cardgrid"></div>
+        <div class="source">Map recommendations are archetype-based guidance. Ranked rotations and map variants can change; use the selected map geometry as a guide.</div>
+      </div>
+    </section>
+    <section id="counters" class="section">
+      <div class="section-head">
+        <div>
+          <h2>Class matchup guide</h2>
+          <p>Read across to see how the row class tends to fare against the column class.</p>
+        </div>
+      </div>
+      <div class="card pad">
+        <div class="class-matrix" id="matrix">
+        </div>
+        <div class="matrix-key">
+          <span>
+            <i class="key-dot" style="background:#9ccd3e"></i>
+            Favorable
+          </span>
+          <span>
+            <i class="key-dot" style="background:#7f8980"></i>
+            Situational
+          </span>
+          <span>
+            <i class="key-dot" style="background:#ff806d"></i>
+            Challenging
+          </span>
+        </div>
+        <p class="source">Class-level tendencies simplify individual kits. Matchups change with range, walls, gadgets, Star Powers, skill and map; they are not absolute counters.</p>
+      </div>
+      <div class="two-col">
+        <div class="card pad">
+          <h3>Fast counter rules</h3>
+          <p class="sub">Think in terms of the threat you need to answer</p>
+          <div class="insight">
+            <span class="icon">↗</span>
+            <div>
+              <b>Into Tanks</b>
+              <p>Prefer high sustained damage, percentage damage, knockback or slows. Keep enough space to kite.</p>
+            </div>
+          </div>
+          <div class="insight">
+            <span class="icon">✦</span>
+            <div>
+              <b>Into Assassins</b>
+              <p>Look for burst, anti-dive control, a defensive gadget or teammates who can peel.</p>
+            </div>
+          </div>
+          <div class="insight">
+            <span class="icon">◎</span>
+            <div>
+              <b>Into Artillery</b>
+              <p>Use mobility, walls you can break, long range or a flank that forces the thrower to reposition.</p>
+            </div>
+          </div>
+        </div>
+        <div class="card pad">
+          <h3>Threat finder</h3>
+          <p class="sub">Choose an opposing brawler to see class-based answers.</p>
+          <select class="select" id="enemySelect" aria-label="Opposing brawler"></select>
+          <div id="counterAnswer" class="recommendation">
+            <h3>Select a brawler</h3>
+            <p>We’ll suggest classes that tend to answer that threat.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="synergy" class="section">
+      <div class="section-head">
+        <div>
+          <h2>Pick around your teammate</h2>
+          <p>Fill the role your teammate’s pick leaves open, then keep the map in mind.</p>
+        </div>
+      </div>
+      <div class="card pad">
+        <div class="pair">
+          <div class="slot">
+            <label>Teammate’s pick</label>
+            <select id="allySelect" aria-label="Teammate brawler">
+            </select>
+          </div>
+          <div class="slot">
+            <label>Map (optional)</label>
+            <select id="synergyMap" aria-label="Map">
+              <option>Any map</option>
+              <option>Double Swoosh</option>
+              <option>Hard Rock Mine</option>
+              <option>Open Business</option>
+              <option>Flaring Phoenix</option>
+              <option>New Horizons</option>
+              <option>Out in the Open</option>
+              <option>Canal Grande</option>
+              <option>Field Goal</option>
+              <option>Safe Zone</option>
+              <option>Hot Potato</option>
+            </select>
+          </div>
+        </div>
+        <div id="synergyResult" class="recommendation">
+          <h3>Choose a teammate brawler</h3>
+          <p>Draft Lab will suggest complementary roles and brawler picks.</p>
+        </div>
+        <div id="synergyPicks" class="cardgrid">
+        </div>
+      </div>
+    </section>
+    <section id="builds" class="section">
+      <div class="section-head">
+        <div>
+          <h2>Star Powers & Gadgets</h2>
+          <p>See the ability options for a brawler, with a practical default to start from.</p>
+        </div>
+      </div>
+      <div class="card pad">
+        <div class="controls">
+          <select class="select" id="buildSelect" aria-label="Choose brawler"></select>
+          <span class="pill lime">Map-aware tips</span>
+        </div>
+        <div id="buildInfo" style="margin-top:18px">
+        </div>
+        <p class="source">Ability names, descriptions and icons are loaded from current game data. The suggested option is a general recommendation; a different map or matchup may favor the alternative.</p>
+       </div>
+    </section>
+    <section id="roster" class="section">
+      <div class="section-head">
+        <div>
+          <h2>Every brawler</h2>
+          <p>Alphabetical directory with portrait and class. Search by name or filter by class.</p>
+        </div>
+        <span class="pill lime" id="rosterBadge">Loading roster…</span>
+      </div>
+      <div class="searchbar">
+        <input id="rosterSearch" class="search" type="search" placeholder="Search brawlers…" aria-label="Search brawlers">
+        <select id="classFilter" class="select" aria-label="Filter by class">
+          <option value="">All classes</option>
+        </select>
+        <select id="sortFilter" class="select" aria-label="Sort roster">
+          <option value="name">Alphabetical</option>
+          <option value="class">Class, then name</option>
+        </select>
+      </div>
+      <div class="roster-grid" id="rosterGrid">
+      </div>
+      <div id="rosterEmpty" class="empty" hidden>No brawlers match those filters.
+      </div>
+    </section>
+  </main>
+  <footer class="footer">
+    <div>Draft Lab · Unofficial fan companion. Not affiliated with or endorsed by Supercell.</div>
+    <div>Game data: <a href="https://brawlapi.com/" target="_blank" rel="noreferrer">BrawlAPI</a> / <a href="https://github.com/Brawlify/CDN" target="_blank" rel="noreferrer">Brawlify CDN</a> · Meta snapshot: <a href="https://brawlmetrics.gg/tier-list/ranked" target="_blank" rel="noreferrer">BrawlMetrics</a>
+    </div>
+  </footer>
+</div>
+<div id="toast" class="toast">Copied
+</div>
+<script src="script.js"></script>>
+</body>
+</html>
