@@ -1,42 +1,628 @@
 const API='https://api.brawlapi.com/v1/brawlers';
-const classes=['Tank','Assassin','Support','Control','Damage Dealer','Marksman','Artillery'];
-const tierData=[{tier:'S',names:['Amber','Gus','Wendy','Shade','Brock','Edgar','Rico','Emz']},{tier:'A',names:['Pearl','Bo','Sirius','Colette','Bibi','Ash','Mortis','Griff','Piper','Nori','El Primo','Sprout','Colt','Jessie','Surge','Spike']},{tier:'B',names:['Belle','Pam','Tara','Janet','Darryl','Mandy','Maisie','R-T']}];
+const classes= ['Tank','Assassin','Support','Control','Damage Dealer','Marksman','Artillery'];
+const tierData=[
+{tier:'S',names:['Amber','Gus','Wendy','Shade','Brock','Edgar','Rico','Emz']},
+{tier:'A',names:['Pearl','Bo','Sirius','Colette','Bibi','Ash','Mortis','Griff','Piper','Nori','El Primo','Sprout','Colt','Jessie','Surge','Spike']},
+{tier:'B',names:['Belle','Pam','Tara','Janet','Darryl','Mandy','Maisie','R-T']}];
 const metaStats={Amber:'56.2%',Gus:'51.9%',Wendy:'55.2%',Shade:'54.5%',Brock:'51.0%',Edgar:'52.5%',Rico:'50.3%',Emz:'52.2%'};
 const maps={
- 'Double Swoosh':{mode:'Gem Grab',trait:'Bushes · split lanes',classes:['Assassin','Control','Tank'],names:['Bo','Amber','Nita','Shade','Emz']},
- 'Hard Rock Mine':{mode:'Gem Grab',trait:'Central control · cover',classes:['Control','Damage Dealer','Assassin'],names:['Amber','Emz','Bo','Rico','Nori']},
- 'Open Business':{mode:'Knockout',trait:'Open lanes · long range',classes:['Marksman','Damage Dealer','Support'],names:['Brock','Piper','Belle','Gus','Nani']},
- 'Flaring Phoenix':{mode:'Bounty',trait:'Long lanes · sparse cover',classes:['Marksman','Support','Control'],names:['Brock','Piper','Gus','Belle','Bo']},
- 'New Horizons':{mode:'Hot Zone',trait:'Open sight lines · zone hold',classes:['Marksman','Control','Support'],names:['Brock','Wendy','Amber','Gus','Emz']},
- 'Out in the Open':{mode:'Knockout',trait:'Wide open · range advantage',classes:['Marksman','Support','Damage Dealer'],names:['Piper','Brock','Belle','Gus','Nani']},
- 'Canal Grande':{mode:'Bounty',trait:'Water lanes · long range',classes:['Marksman','Artillery','Support'],names:['Piper','Brock','Sprout','Gus','Nani']},
- 'Field Goal':{mode:'Brawl Ball',trait:'Bushes · close-range pressure',classes:['Tank','Assassin','Support'],names:['Bibi','El Primo','Nita','Gus','Shade']},
- 'Safe Zone':{mode:'Heist',trait:'Open lanes · safe damage',classes:['Damage Dealer','Marksman','Control'],names:['Colt','Rico','Amber','Brock','Jessie']},
- 'Hot Potato':{mode:'Heist',trait:'Tight cover · safe pressure',classes:['Damage Dealer','Tank','Control'],names:['Colt','Bibi','Rico','Amber','Colette']},
- 'Parallel Plays':{mode:'Hot Zone',trait:'Two zones · split pressure',classes:['Control','Support','Marksman'],names:['Emz','Amber','Wendy','Gus','Brock']},
- 'Ring of Fire':{mode:'Hot Zone',trait:'Central zone · control',classes:['Control','Tank','Support'],names:['Amber','Emz','Ash','Nita','Gus']}
+ 'Double Swoosh':{
+    mode:'Gem Grab',
+    trait:'Bushes · split lanes',
+    classes:['Assassin','Control','Tank'],
+    names:['Bo','Amber','Nita','Shade','Emz']},
+ 'Hard Rock Mine':{
+    mode:'Gem Grab',
+    trait:'Central control · cover',
+    classes:['Control','Damage Dealer','Assassin'],
+    names:['Amber','Emz','Bo','Rico','Nori']},
+ 'Open Business':{
+    mode:'Knockout',
+    trait:'Open lanes · long range',
+    classes:['Marksman','Damage Dealer','Support'],
+    names:['Brock','Piper','Belle','Gus','Nani']},
+ 'Flaring Phoenix':{
+    mode:'Bounty',
+    trait:'Long lanes · sparse cover',
+    classes:['Marksman','Support','Control'],
+    names:['Brock','Piper','Gus','Belle','Bo']},
+ 'New Horizons':{
+    mode:'Hot Zone',
+    trait:'Open sight lines · zone hold',
+    classes:['Marksman','Control','Support'],
+    names:['Brock','Wendy','Amber','Gus','Emz']},
+ 'Out in the Open':{
+    mode:'Knockout',
+    trait:'Wide open · range advantage',
+    classes:['Marksman','Support','Damage Dealer'],
+    names:['Piper','Brock','Belle','Gus','Nani']},
+ 'Canal Grande':{
+    mode:'Bounty',
+    trait:'Water lanes · long range',
+    classes:['Marksman','Artillery','Support'],
+    names:['Piper','Brock','Sprout','Gus','Nani']},
+ 'Field Goal':{
+    mode:'Brawl Ball',
+    trait:'Bushes · close-range pressure',
+    classes:['Tank','Assassin','Support'],
+    names:['Bibi','El Primo','Nita','Gus','Shade']},
+ 'Safe Zone':{
+    mode:'Heist',
+    trait:'Open lanes · safe damage',
+    classes:['Damage Dealer','Marksman','Control'],
+    names:['Colt','Rico','Amber','Brock','Jessie']},
+ 'Hot Potato':{
+    mode:'Heist',
+    trait:'Tight cover · safe pressure',
+    classes:['Damage Dealer','Tank','Control'],
+    names:['Colt','Bibi','Rico','Amber','Colette']},
+ 'Parallel Plays':{
+    mode:'Hot Zone',
+    trait:'Two zones · split pressure',
+    classes:['Control','Support','Marksman'],
+    names:['Emz','Amber','Wendy','Gus','Brock']},
+ 'Ring of Fire':{
+    mode:'Hot Zone',
+    trait:'Central zone · control',
+    classes:['Control','Tank','Support'],
+    names:['Amber','Emz','Ash','Nita','Gus']}
 };
-const classCounter={Tank:{Tank:'even',Assassin:'bad',Support:'even',Control:'bad','Damage Dealer':'bad',Marksman:'good',Artillery:'good'},Assassin:{Tank:'bad',Assassin:'even',Support:'good',Control:'bad','Damage Dealer':'even',Marksman:'good',Artillery:'good'},Support:{Tank:'even',Assassin:'bad',Support:'even',Control:'bad','Damage Dealer':'even',Marksman:'even',Artillery:'even'},Control:{Tank:'good',Assassin:'good',Support:'even',Control:'even','Damage Dealer':'even',Marksman:'bad',Artillery:'good'},'Damage Dealer':{Tank:'good',Assassin:'even',Support:'even',Control:'even','Damage Dealer':'even',Marksman:'bad',Artillery:'good'},Marksman:{Tank:'bad',Assassin:'bad',Support:'even',Control:'good','Damage Dealer':'good',Marksman:'even',Artillery:'good'},Artillery:{Tank:'good',Assassin:'bad',Support:'even',Control:'even','Damage Dealer':'even',Marksman:'bad',Artillery:'even'}};
-const roleTips={Tank:'frontline pressure and objective presence',Assassin:'flank access and quick backline pressure',Support:'healing, shields or utility for longer fights',Control:'area denial and space around the objective','Damage Dealer':'reliable damage to punish grouped enemies',Marksman:'long-range lane coverage',Artillery:'pressure behind walls and force movement'};
+const classCounter={
+    Tank:
+        {Tank:'even',
+            Assassin:'bad',
+            Support:'even',
+            Control:'bad',
+            'Damage Dealer':'bad',
+            Marksman:'good',
+        Artillery:'good'},
+        Assassin:{Tank:'bad',
+            Assassin:'even',
+            Support:'good',
+            Control:'bad',
+            'Damage Dealer':'even',
+            Marksman:'good',
+        Artillery:'good'},
+        Support:{Tank:'even',
+            Assassin:'bad',
+            Support:'even',
+            Control:'bad',
+            'Damage Dealer':'even',
+            Marksman:'even',
+        Artillery:'even'},
+        Control:{Tank:'good',
+                Assassin:'good',
+                Support:'even',
+                Control:'even',
+                'Damage Dealer':'even',
+                Marksman:'bad',
+        Artillery:'good'},
+        'Damage Dealer':{
+            Tank:'good',
+            Assassin:'even',
+            Support:'even',
+            Control:'even',
+            'Damage Dealer':'even',
+            Marksman:'bad',
+        Artillery:'good'},
+        Marksman:{
+            Tank:'bad',
+            Assassin:'bad',
+            Support:'even',
+            Control:'good',
+            'Damage Dealer':'good',
+            Marksman:'even',
+        Artillery:'good'},
+        Artillery:{
+            Tank:'good',
+            Assassin:'bad',
+            Support:'even',
+            Control:'even',
+            'Damage Dealer':'even',
+            Marksman:'bad',
+        Artillery:'even'}};
+const roleTips={
+    Tank:'frontline pressure and objective presence',
+    Assassin:'flank access and quick backline pressure',
+    Support:'healing, shields or utility for longer fights',
+    Control:'area denial and space around the objective',
+    'Damage Dealer':'reliable damage to punish grouped enemies',
+    Marksman:'long-range lane coverage',
+    Artillery:'pressure behind walls and force movement'
+};
 let brawlers=[];
 const displayClass=n=>n==='Controller'?'Control':n;
 const slug=n=>n.toLowerCase().replace(/[^a-z0-9]+/g,'-');
 const portrait=b=>b.imageUrl2||b.imageUrl||'';
-function img(b,cls=''){return `<img class="${cls}" src="${portrait(b)}" alt="${esc(b.name)}" loading="lazy" onerror="this.style.visibility='hidden'">`}
+function img(b,cls=''){
+    return `<img class="${cls}" 
+    src="${portrait(b)}" 
+    alt="${esc(b.name)}" 
+    loading="lazy" 
+    onerror="this.style.visibility='hidden'">`
+}
 function esc(s=''){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function byName(n){return brawlers.find(b=>b.name.toLowerCase()===n.toLowerCase())}
-function safeBrawler(n){return byName(n)||brawlers.find(b=>displayClass(b.class?.name)===n)||brawlers[0]}
-function populateSelect(sel,items,placeholder){sel.innerHTML=(placeholder?`<option value="">${placeholder}</option>`:'')+items.map(b=>`<option value="${esc(b.name)}">${esc(b.name)}</option>`).join('')}
-function renderMeta(){const box=document.querySelector('#tierBoard');box.innerHTML=tierData.map(({tier,names})=>`<div class="tier-row"><div class="tier-label ${tier.toLowerCase()}">${tier}</div><div class="brawler-chips">${names.map(n=>{const b=byName(n);return b?`<span class="brawler-chip">${img(b)}<span>${esc(n)}</span><span class="score">${metaStats[n]||''}</span></span>`:`<span class="pill">${esc(n)}</span>`}).join('')}</div></div>`).join('')+`<div class="source">Tier snapshot: BrawlMetrics Ranked, Oct 23, 2026. The source page reports more than 11 million sampled battles across ranks; tiers are an at-a-glance baseline, not a promise of results in every draft.</div>`}
-function renderMap(){const name=document.querySelector('#mapSelect').value, data=maps[name];document.querySelector('#mapMode').textContent=data.mode;document.querySelector('#mapTrait').textContent=data.trait;const cards=data.names.map((n,i)=>{const b=byName(n);if(!b)return '';return `<article class="card pick">${img(b)}<div><h3>${esc(b.name)}</h3><p>${esc(displayClass(b.class?.name))} · ${esc(roleTips[displayClass(b.class?.name)]||'map-fit pick')}</p><span class="win">${i===0?'SIGNATURE PICK':i<3?'STRONG FIT':'ALTERNATIVE'}</span></div></article>`}).join('');document.querySelector('#mapPicks').innerHTML=cards||'<div class="empty">Loading recommendations…</div>'}
-function renderMatrix(){document.querySelector('#matrix').innerHTML='<div class="matrix-cell head">Attacker ↓</div>'+classes.map(c=>`<div class="matrix-cell head">${esc(c)}</div>`).join('')+classes.map(row=>`<div class="matrix-cell rowhead">${esc(row)}</div>`+classes.map(col=>`<div title="${row} into ${col}" class="matrix-cell ${classCounter[row][col]}">${classCounter[row][col]==='good'?'Favorable':classCounter[row][col]==='bad'?'Tough':'Even'}</div>`).join('')).join('')}
-function counterAdvice(){const b=byName(document.querySelector('#enemySelect').value);if(!b)return;const enemyClass=displayClass(b.class?.name);const answers=classes.filter(c=>classCounter[c]?.[enemyClass]==='good');document.querySelector('#counterAnswer').innerHTML=`<h3>Answer ${esc(b.name)} · ${esc(enemyClass)}</h3><p>Start with ${answers.slice(0,3).join(', ')||'a flexible pick'}: ${answers.slice(0,3).map(c=>roleTips[c]?.split(' and ')[0]).join('; ')}. Check the specific kit and map before locking in.</p>`}
-function renderRoster(){const search=document.querySelector('#rosterSearch').value.trim().toLowerCase(),filter=document.querySelector('#classFilter').value,sort=document.querySelector('#sortFilter').value;let list=brawlers.filter(b=>b.name.toLowerCase().includes(search)&&(!filter||displayClass(b.class?.name)===filter));list.sort((a,b)=>sort==='class'?(displayClass(a.class?.name).localeCompare(displayClass(b.class?.name))||a.name.localeCompare(b.name)):a.name.localeCompare(b.name));document.querySelector('#rosterGrid').innerHTML=list.map((b,i)=>`<article class="roster-card" title="${esc(b.name)} · ${esc(displayClass(b.class?.name||'Unknown'))}"><span class="roster-order">${String(i+1).padStart(3,'0')}</span>${img(b)}<strong>${esc(b.name)}</strong><small>${esc(displayClass(b.class?.name||'Unknown'))}</small></article>`).join('');document.querySelector('#rosterEmpty').hidden=!!list.length;document.querySelector('#rosterBadge').textContent=`${list.length} of ${brawlers.length} brawlers`;document.querySelector('#navCount').textContent=`(${brawlers.length})`}
-function renderBuild(){const b=byName(document.querySelector('#buildSelect').value);if(!b)return;const pairs=[['Star Power',b.starPowers||[]],['Gadget',b.gadgets||[]]];document.querySelector('#buildInfo').innerHTML=`<div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">${img(b,'') }<div><h3 style="margin:0 0 5px;font:600 20px 'Space Grotesk'">${esc(b.name)}</h3><span class="pill">${esc(displayClass(b.class?.name||''))}</span><p style="color:var(--muted);font-size:12px;max-width:650px;line-height:1.5;margin:9px 0 0">${esc(b.description||'')}</p></div></div>`+pairs.map(([label,items])=>`<div class="ability-row"><div class="ability-kind">${label}</div>${items.length?items.map((a,i)=>`<div class="ability-item"><img src="${esc(a.imageUrl||'')}" alt="" loading="lazy"><div>${esc(a.name)}<span class="pick-tag">${i===0?'GENERAL PICK':'SITUATIONAL'}</span></div></div>`).join(''):'<div class="ability-item">No ability data found</div>'}</div>`).join('')}
-function renderSynergy(){const name=document.querySelector('#allySelect').value, ally=byName(name);if(!ally)return;const c=displayClass(ally.class?.name||'');let target=(c==='Marksman'||c==='Artillery')?'Tank':c==='Tank'?'Support':c==='Support'?'Damage Dealer':c==='Assassin'?'Control':c==='Control'?'Marksman':'Support';const compatible=classes.filter(k=>classCounter[k]?.[c]==='good');if(compatible.length)target=compatible[0];const choices=brawlers.filter(b=>displayClass(b.class?.name)===target&&b.name!==name).sort((a,b)=>a.name.localeCompare(b.name)).slice(0,5);document.querySelector('#synergyResult').innerHTML=`<h3>Pair with ${esc(ally.name)} · add ${esc(target)}</h3><p>Your teammate brings ${esc(roleTips[c]||c)}. A ${esc(target)} pick adds ${esc(roleTips[target]||'a complementary role')}, helping round out the draft. ${document.querySelector('#synergyMap').value!=='Any map'?`Keep ${esc(document.querySelector('#synergyMap').value)}’s geometry in mind.`:''}</p>`;document.querySelector('#synergyPicks').innerHTML=choices.map(b=>`<article class="card pick">${img(b)}<div><h3>${esc(b.name)}</h3><p>${esc(displayClass(b.class?.name))} · teammate role gap</p></div></article>`).join('')}
-async function load(){try{const r=await fetch(API,{cache:'no-store'});if(!r.ok)throw Error('API unavailable');const j=await r.json();brawlers=(j.list||[]).filter(b=>b.released!==false).sort((a,b)=>a.name.localeCompare(b.name));document.querySelector('#dataStatus').textContent=`Live game data · ${brawlers.length} brawlers`;document.querySelector('#statRoster').textContent=brawlers.length;document.querySelector('#rosterBadge').textContent=`${brawlers.length} brawlers`;}catch(e){document.querySelector('#dataStatus').textContent='Game data unavailable';document.querySelector('#statRoster').textContent='—';document.querySelector('#rosterBadge').textContent='Could not load live data';document.querySelector('#rosterGrid').innerHTML='<div class="empty">Connect to the internet to load the current roster and portraits from BrawlAPI.</div>';return}
-const known=[...new Set(brawlers.map(b=>displayClass(b.class?.name)).filter(Boolean))];const ordered=classes.filter(c=>known.includes(c));document.querySelector('#classFilter').innerHTML='<option value="">All classes</option>'+ordered.map(c=>`<option>${esc(c)}</option>`).join('');populateSelect(document.querySelector('#enemySelect'),brawlers,'Choose opposing brawler');populateSelect(document.querySelector('#allySelect'),brawlers,'Choose teammate');populateSelect(document.querySelector('#buildSelect'),brawlers,'Choose brawler');document.querySelector('#buildSelect').value='Gus';document.querySelector('#allySelect').value='Brock';document.querySelector('#enemySelect').value='El Primo';renderMeta();renderMap();renderMatrix();counterAdvice();renderBuild();renderSynergy();renderRoster()}
-document.querySelectorAll('.nav button').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b===btn));document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===btn.dataset.tab));history.replaceState(null,'','#'+btn.dataset.tab)}));
-document.querySelector('#mapSelect').addEventListener('change',renderMap);document.querySelector('#enemySelect').addEventListener('change',counterAdvice);document.querySelector('#allySelect').addEventListener('change',renderSynergy);document.querySelector('#synergyMap').addEventListener('change',renderSynergy);document.querySelector('#buildSelect').addEventListener('change',renderBuild);['rosterSearch','classFilter','sortFilter'].forEach(id=>document.querySelector('#'+id).addEventListener(id==='rosterSearch'?'input':'change',renderRoster));
-const hash=location.hash.slice(1);if(hash&&document.querySelector(`[data-tab="${hash}"]`))document.querySelector(`[data-tab="${hash}"]`).click();
+function byName(n){
+    return brawlers.find(b=>b.name.toLowerCase()===n.toLowerCase())
+}
+function safeBrawler(n){
+    return byName(n)||brawlers.find(b=>displayClass(b.class?.name)===n)||brawlers[0]
+}
+function populateSelect(sel,items,placeholder){
+    sel.innerHTML=(placeholder?`<option value="">
+        ${placeholder}</option>`:'')+items.map(b=>`
+            <option value="${esc(b.name)}">${esc(b.name)}
+            </option>`).join('')
+        }
+function renderMeta(){
+    const box=document.querySelector('#tierBoard');
+    box.innerHTML=tierData.map(({tier,names})=>`
+    <div class="tier-row">
+    <div class="tier-label ${tier.toLowerCase()}">
+    ${tier}
+    </div>
+    <div class="brawler-chips">
+    ${names.map(n=>{const b=byName(n);
+        return b?`
+        <span class="brawler-chip">${img(b)}<span>${esc(n)}</span>
+        <span class="score">${metaStats[n]||''}</span></span>`:`
+        <span class="pill">${esc(n)}</span>`}).join('')}
+        </div>
+        </div>`).join('')+`<div class="source">
+        Tier snapshot: BrawlMetrics Ranked, Oct 23, 2026. The source page reports more than 11 million sampled battles across ranks;
+        tiers are an at-a-glance baseline, not a promise of results in every draft.
+        </div>`
+    }
+function renderMap(){
+    const name=document.querySelector('#mapSelect').value,
+    data=maps[name];
+    document.querySelector('#mapMode').textContent=data.mode;
+    document.querySelector('#mapTrait').textContent=data.trait;
+    const cards=data.names.map((n,i)=>{const b=byName(n);
+        if(!b)return '';
+        return `<article class="card pick">${img(b)}
+        <div>
+        <h3>${esc(b.name)}
+        </h3>
+        <p>${esc(displayClass(b.class?.name))} · ${esc(roleTips[displayClass(b.class?.name)]||'map-fit pick')}</p><span class="win">${i===0?'SIGNATURE PICK':i<3?'STRONG FIT':'ALTERNATIVE'}</span></div></article>`}).join('');document.querySelector('#mapPicks').innerHTML=cards||'<div class="empty">Loading recommendations…</div>'}
+
+function renderMatrix() {
+    document.querySelector('#matrix').innerHTML =
+        '<div class="matrix-cell head">Attacker ↓</div>' +
+        classes.map(c =>
+            `<div class="matrix-cell head">${esc(c)}</div>`
+        ).join('') +
+        classes.map(row =>
+            `<div class="matrix-cell rowhead">${esc(row)}</div>` +
+            classes.map(col => `
+                <div
+                    title="${row} into ${col}"
+                    class="matrix-cell ${classCounter[row][col]}"
+                >
+                    ${
+                        classCounter[row][col] === 'good'
+                            ? 'Favorable'
+                            : classCounter[row][col] === 'bad'
+                                ? 'Tough'
+                                : 'Even'
+                    }
+                </div>
+            `).join('')
+        ).join('');
+}
+
+
+function counterAdvice() {
+    const b = byName(
+        document.querySelector('#enemySelect').value
+    );
+
+    if (!b) return;
+
+    const enemyClass = displayClass(b.class?.name);
+
+    const answers = classes.filter(
+        c => classCounter[c]?.[enemyClass] === 'good'
+    );
+
+    document.querySelector('#counterAnswer').innerHTML = `
+        <h3>
+            Answer ${esc(b.name)} · ${esc(enemyClass)}
+        </h3>
+
+        <p>
+            Start with ${
+                answers.slice(0, 3).join(', ') || 'a flexible pick'
+            }:
+
+            ${answers
+                .slice(0, 3)
+                .map(c => roleTips[c]?.split(' and ')[0])
+                .join('; ')
+            }.
+
+            Check the specific kit and map before locking in.
+        </p>
+    `;
+}
+
+
+function renderRoster() {
+    const search = document
+        .querySelector('#rosterSearch')
+        .value.trim()
+        .toLowerCase();
+
+    const filter = document.querySelector('#classFilter').value;
+    const sort = document.querySelector('#sortFilter').value;
+
+    let list = brawlers.filter(b =>
+        b.name.toLowerCase().includes(search) &&
+        (!filter || displayClass(b.class?.name) === filter)
+    );
+
+    list.sort((a, b) =>
+        sort === 'class'
+            ? (
+                displayClass(a.class?.name).localeCompare(
+                    displayClass(b.class?.name)
+                ) ||
+                a.name.localeCompare(b.name)
+            )
+            : a.name.localeCompare(b.name)
+    );
+
+    document.querySelector('#rosterGrid').innerHTML =
+        list.map((b, i) => `
+            <article
+                class="roster-card"
+                title="${esc(b.name)} · ${esc(
+                    displayClass(b.class?.name || 'Unknown')
+                )}"
+            >
+                <span class="roster-order">
+                    ${String(i + 1).padStart(3, '0')}
+                </span>
+
+                ${img(b)}
+
+                <strong>${esc(b.name)}</strong>
+
+                <small>
+                    ${esc(displayClass(b.class?.name || 'Unknown'))}
+                </small>
+            </article>
+        `).join('');
+
+    document.querySelector('#rosterEmpty').hidden = !!list.length;
+
+    document.querySelector('#rosterBadge').textContent =
+        `${list.length} of ${brawlers.length} brawlers`;
+
+    document.querySelector('#navCount').textContent =
+        `(${brawlers.length})`;
+}
+
+
+function renderBuild() {
+    const b = byName(
+        document.querySelector('#buildSelect').value
+    );
+
+    if (!b) return;
+
+    const pairs = [
+        ['Star Power', b.starPowers || []],
+        ['Gadget', b.gadgets || []]
+    ];
+
+    document.querySelector('#buildInfo').innerHTML = `
+        <div
+            style="
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                margin-bottom: 16px;
+            "
+        >
+            ${img(b, '')}
+
+            <div>
+                <h3
+                    style="
+                        margin: 0 0 5px;
+                        font: 600 20px 'Space Grotesk';
+                    "
+                >
+                    ${esc(b.name)}
+                </h3>
+
+                <span class="pill">
+                    ${esc(displayClass(b.class?.name || ''))}
+                </span>
+
+                <p
+                    style="
+                        color: var(--muted);
+                        font-size: 12px;
+                        max-width: 650px;
+                        line-height: 1.5;
+                        margin: 9px 0 0;
+                    "
+                >
+                    ${esc(b.description || '')}
+                </p>
+            </div>
+        </div>
+    ` +
+    pairs.map(([label, items]) => `
+        <div class="ability-row">
+            <div class="ability-kind">
+                ${label}
+            </div>
+
+            ${
+                items.length
+                    ? items.map((a, i) => `
+                        <div class="ability-item">
+                            <img
+                                src="${esc(a.imageUrl || '')}"
+                                alt=""
+                                loading="lazy"
+                            >
+
+                            <div>
+                                ${esc(a.name)}
+
+                                <span class="pick-tag">
+                                    ${i === 0
+                                        ? 'GENERAL PICK'
+                                        : 'SITUATIONAL'
+                                    }
+                                </span>
+                            </div>
+                        </div>
+                    `).join('')
+                    : '<div class="ability-item">No ability data found</div>'
+            }
+        </div>
+    `).join('');
+}
+
+
+function renderSynergy() {
+    const name = document.querySelector('#allySelect').value;
+    const ally = byName(name);
+
+    if (!ally) return;
+
+    const c = displayClass(ally.class?.name || '');
+
+    let target =
+        (c === 'Marksman' || c === 'Artillery')
+            ? 'Tank'
+            : c === 'Tank'
+                ? 'Support'
+                : c === 'Support'
+                    ? 'Damage Dealer'
+                    : c === 'Assassin'
+                        ? 'Control'
+                        : c === 'Control'
+                            ? 'Marksman'
+                            : 'Support';
+
+    const compatible = classes.filter(
+        k => classCounter[k]?.[c] === 'good'
+    );
+
+    if (compatible.length) {
+        target = compatible[0];
+    }
+
+    const choices = brawlers
+        .filter(b =>
+            displayClass(b.class?.name) === target &&
+            b.name !== name
+        )
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .slice(0, 5);
+
+    document.querySelector('#synergyResult').innerHTML = `
+        <h3>
+            Pair with ${esc(ally.name)} · add ${esc(target)}
+        </h3>
+
+        <p>
+            Your teammate brings ${esc(roleTips[c] || c)}.
+
+            A ${esc(target)} pick adds
+            ${esc(roleTips[target] || 'a complementary role')},
+            helping round out the draft.
+
+            ${
+                document.querySelector('#synergyMap').value !== 'Any map'
+                    ? `Keep ${
+                        esc(document.querySelector('#synergyMap').value)
+                    }’s geometry in mind.`
+                    : ''
+            }
+        </p>
+    `;
+
+    document.querySelector('#synergyPicks').innerHTML =
+        choices.map(b => `
+            <article class="card pick">
+                ${img(b)}
+
+                <div>
+                    <h3>${esc(b.name)}</h3>
+
+                    <p>
+                        ${esc(displayClass(b.class?.name))}
+                        · teammate role gap
+                    </p>
+                </div>
+            </article>
+        `).join('');
+}
+
+
+async function load() {
+    try {
+        const r = await fetch(API, {
+            cache: 'no-store'
+        });
+
+        if (!r.ok) {
+            throw Error('API unavailable');
+        }
+
+        const j = await r.json();
+
+        brawlers = (j.list || [])
+            .filter(b => b.released !== false)
+            .sort((a, b) => a.name.localeCompare(b.name));
+
+        document.querySelector('#dataStatus').textContent =
+            `Live game data · ${brawlers.length} brawlers`;
+
+        document.querySelector('#statRoster').textContent =
+            brawlers.length;
+
+        document.querySelector('#rosterBadge').textContent =
+            `${brawlers.length} brawlers`;
+
+    } catch (e) {
+        document.querySelector('#dataStatus').textContent =
+            'Game data unavailable';
+
+        document.querySelector('#statRoster').textContent = '—';
+
+        document.querySelector('#rosterBadge').textContent =
+            'Could not load live data';
+
+        document.querySelector('#rosterGrid').innerHTML = `
+            <div class="empty">
+                Connect to the internet to load the current roster
+                and portraits from BrawlAPI.
+            </div>
+        `;
+
+        return;
+    }
+
+    const known = [
+        ...new Set(
+            brawlers
+                .map(b => displayClass(b.class?.name))
+                .filter(Boolean)
+        )
+    ];
+
+    const ordered = classes.filter(c => known.includes(c));
+
+    document.querySelector('#classFilter').innerHTML =
+        '<option value="">All classes</option>' +
+        ordered.map(c =>
+            `<option>${esc(c)}</option>`
+        ).join('');
+
+    populateSelect(
+        document.querySelector('#enemySelect'),
+        brawlers,
+        'Choose opposing brawler'
+    );
+
+    populateSelect(
+        document.querySelector('#allySelect'),
+        brawlers,
+        'Choose teammate'
+    );
+
+    populateSelect(
+        document.querySelector('#buildSelect'),
+        brawlers,
+        'Choose brawler'
+    );
+
+    document.querySelector('#buildSelect').value = 'Gus';
+    document.querySelector('#allySelect').value = 'Brock';
+    document.querySelector('#enemySelect').value = 'El Primo';
+
+    renderMeta();
+    renderMap();
+    renderMatrix();
+    counterAdvice();
+    renderBuild();
+    renderSynergy();
+    renderRoster();
+}
+
+
+document.querySelectorAll('.nav button').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav button').forEach(b => {
+            b.classList.toggle('active', b === btn);
+        });
+
+        document.querySelectorAll('.section').forEach(s => {
+            s.classList.toggle(
+                'active',
+                s.id === btn.dataset.tab
+            );
+        });
+
+        history.replaceState(
+            null,
+            '',
+            '#' + btn.dataset.tab
+        );
+    });
+});
+
+
+document.querySelector('#mapSelect').addEventListener(
+    'change',
+    renderMap
+);
+
+document.querySelector('#enemySelect').addEventListener(
+    'change',
+    counterAdvice
+);
+
+document.querySelector('#allySelect').addEventListener(
+    'change',
+    renderSynergy
+);
+
+document.querySelector('#synergyMap').addEventListener(
+    'change',
+    renderSynergy
+);
+
+document.querySelector('#buildSelect').addEventListener(
+    'change',
+    renderBuild
+);
+
+
+[
+    'rosterSearch',
+    'classFilter',
+    'sortFilter'
+].forEach(id => {
+    document.querySelector('#' + id).addEventListener(
+        id === 'rosterSearch' ? 'input' : 'change',
+        renderRoster
+    );
+});
+
+
+const hash = location.hash.slice(1);
+
+if (hash && document.querySelector(`[data-tab="${hash}"]`)) {
+    document.querySelector(`[data-tab="${hash}"]`).click();
+}
+
 load();
